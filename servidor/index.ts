@@ -21,6 +21,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const DIST_PATH = path.join(__dirname, "..", "dist");
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(DIST_PATH));
+}
+
 app.get("/api/health", (_req, res) => {
   res.json({ estado: "ok" });
 });
@@ -32,6 +38,12 @@ app.use("/api/turnos", rutasTurnos);
 app.use("/api/fidelizacion", rutasFidelizacion);
 app.use("/api/empleados", rutasEmpleados);
 app.use("/api/estadisticas", rutasEstadisticas);
+
+if (process.env.NODE_ENV === "production") {
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(DIST_PATH, "index.html"));
+  });
+}
 
 async function inicializarBaseDeDatos() {
   try {
