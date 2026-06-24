@@ -3,7 +3,7 @@ import cors from "cors";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import { ENTORNO } from "./config/entorno.js";
+import { ENTORNO, detectarProduccion } from "./config/entorno.js";
 import pool from "./config/base-datos.js";
 import { iniciarWorkerRecordatorios } from "./utilidades/notificaciones.js";
 import rutasAutenticacion from "./rutas/autenticacion.rutas.js";
@@ -23,7 +23,7 @@ app.use(express.json());
 
 const DIST_PATH = path.join(__dirname, "..", "dist");
 
-if (process.env.NODE_ENV === "production") {
+if (detectarProduccion()) {
   app.use(express.static(DIST_PATH));
 }
 
@@ -39,7 +39,7 @@ app.use("/api/fidelizacion", rutasFidelizacion);
 app.use("/api/empleados", rutasEmpleados);
 app.use("/api/estadisticas", rutasEstadisticas);
 
-if (process.env.NODE_ENV === "production") {
+if (detectarProduccion()) {
   app.get("*", (_req, res) => {
     res.sendFile(path.join(DIST_PATH, "index.html"));
   });
