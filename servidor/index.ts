@@ -40,7 +40,7 @@ app.use("/api/empleados", rutasEmpleados);
 app.use("/api/estadisticas", rutasEstadisticas);
 
 if (detectarProduccion()) {
-  app.get("*", (_req, res) => {
+  app.get("/{*path}", (_req, res) => {
     res.sendFile(path.join(DIST_PATH, "index.html"));
   });
 }
